@@ -1,0 +1,38 @@
+/* Spliit app 전용 레이아웃 — 기능·화면은 shared/에서 가져온다 */
+html, body {
+  height: 100%;
+  background: var(--bg);
+  font-family: 'Noto Sans KR', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+}
+input, textarea { -webkit-user-select: text; user-select: text; }
+
+/* 휴대폰 전체 화면 + 노치·홈바 안전 영역 */
+.device {
+  position: relative;
+  width: 100vw;
+  height: 100dvh;
+  background: var(--bg);
+  overflow: hidden;
+  padding-top: env(safe-area-inset-top, 0);
+}
+
+/* PC 브라우저에서 미리볼 때만 휴대폰 틀로 보여준다 */
+@media (min-width: 481px) {
+  body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #D8D8D4;
+  }
+  .device {
+    width: 420px;
+    height: min(820px, 100dvh);
+    border-radius: 44px;
+    box-shadow: 0 40px 100px rgba(0,0,0,.28), 0 0 0 1px rgba(0,0,0,.1);
+  }
+}

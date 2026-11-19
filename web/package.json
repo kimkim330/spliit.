@@ -1,0 +1,7 @@
+{
+  "name": "spliit-web",
+  "private": true,
+  "scripts": {
+    "build": "node ../scripts/build.mjs web"
+  }
+}

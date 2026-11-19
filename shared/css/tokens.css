@@ -1,0 +1,17 @@
+/* Spliit 공통 디자인 토큰 — web·app이 함께 사용 */
+:root {
+  --bg: #FAFAF7;
+  --bg2: #F2F2EE;
+  --border: #E2E2DC;
+  --black: #1C1C1A;
+  --gray: #888884;
+  --gray-light: #BDBDB8;
+  --green: #2B6E4E;
+  --green-bg: #EEF5F1;
+  --green-mid: #4A9A70;
+  --amber: #F5A623;
+  --amber-bg: #FEF5E7;
+  --red: #D94F3D;
+  --red-bg: #FDF0EE;
+  --white: #FFFFFF;
+}

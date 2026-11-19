@@ -1,0 +1,9 @@
+{
+  "name": "spliit",
+  "private": true,
+  "scripts": {
+    "build:web": "node scripts/build.mjs web",
+    "build:app": "node scripts/build.mjs app",
+    "build": "npm run build:web && npm run build:app"
+  }
+}

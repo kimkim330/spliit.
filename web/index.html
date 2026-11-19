@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Spliit — 동네 소분 공구</title>
+<meta name="description" content="1인 가구를 위한 동네 소분·공동구매 서비스 Spliit">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/css/tokens.css">
+<link rel="stylesheet" href="../shared/css/components.css">
+<link rel="stylesheet" href="./css/web.css">
+</head>
+<body class="platform-web">
+
+<!-- 넓은 화면에서만 보이는 상단 내비게이션 (좁은 화면에서는 공통 하단 탭바 사용) -->
+<header class="web-header">
+  <button class="web-brand" onclick="goTo('screen-home')">Spliit</button>
+  <nav class="web-nav" aria-label="주요 메뉴">
+    <button data-nav="screen-home" onclick="goTo('screen-home')">홈</button>
+    <button data-nav="screen-sale" onclick="goTo('screen-sale')">동네할인</button>
+    <button data-nav="screen-chat" onclick="goTo('screen-chat')">채팅</button>
+    <button data-nav="screen-my" onclick="goTo('screen-my')">내 정보</button>
+  </nav>
+  <button class="web-cta" onclick="goTo('screen-create')">＋ 모임 개설</button>
+</header>
+
+<main class="web-main">
+  <div class="device" id="spliit-root"></div>
+</main>
+
+<script src="../shared/js/screens.js"></script>
+<script src="../shared/js/app.js"></script>
+</body>
+</html>

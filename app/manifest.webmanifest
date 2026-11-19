@@ -1,0 +1,11 @@
+{
+  "name": "Spliit — 동네 소분 공구",
+  "short_name": "Spliit",
+  "lang": "ko",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAFAF7",
+  "theme_color": "#2B6E4E"
+}
