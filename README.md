@@ -34,20 +34,19 @@ spliit./
 
 ## web — GitHub + Cloudflare Pages 배포
 
-`main`에 `web/` 변경이 푸시되면 GitHub Actions(`.github/workflows/deploy-web.yml`)가 `web/` 폴더를 Cloudflare Pages 프로젝트 `spliit`에 자동 배포합니다. 빌드 과정은 없습니다.
+Cloudflare 대시보드에서 이 저장소를 Git으로 연결해 배포합니다. `main`에 푸시하면 자동으로 다시 배포됩니다.
 
-### 처음 한 번만 설정
+Workers & Pages → Create → Pages → **Connect to Git** → 이 저장소 선택 후:
 
-1. **Cloudflare API 토큰 만들기**: Cloudflare 대시보드 → 오른쪽 위 프로필 → My Profile → API Tokens → Create Token → **Create Custom Token**
-   - Permissions: `Account` · `Cloudflare Pages` · `Edit`
-   - Account Resources: 내 계정
-2. **Account ID 확인**: 대시보드 → Workers & Pages 화면 오른쪽의 Account ID 복사
-3. **GitHub 시크릿 추가**: 이 저장소 → Settings → Secrets and variables → Actions → New repository secret
-   - `CLOUDFLARE_API_TOKEN` = 1번 토큰
-   - `CLOUDFLARE_ACCOUNT_ID` = 2번 ID
-4. **배포 실행**: 저장소 → Actions → *Deploy web to Cloudflare Pages* → **Run workflow** (이후에는 푸시할 때마다 자동)
+| 항목 | 값 |
+|---|---|
+| Production branch | `main` |
+| Framework preset | `None` |
+| Build command | (비워 둠) |
+| Build output directory | `web` |
 
-배포 주소: `https://spliit.pages.dev` (이름이 이미 사용 중이면 Cloudflare가 정한 주소 — Actions 로그와 대시보드에서 확인)
+Workers 화면에서 만들어 Deploy command가 필수로 나오는 경우:
+`npx wrangler deploy --assets=./web --name=spliit --compatibility-date=2025-01-01`
 
 `web/_headers`에 보안 헤더와 캐시 설정이 들어 있습니다.
 
