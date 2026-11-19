@@ -2,63 +2,89 @@
 
 1인 가구를 위한 동네 소분·공동구매 서비스입니다. 대용량 식재료와 생필품, 배달 음식을 근처 이웃과 안전하게 나눠 살 수 있도록 설계했습니다.
 
-web 버전과 app 버전을 한 저장소에서 관리합니다. 기능과 화면은 `shared/`에 한 번만 작성하고, `web/`과 `app/`은 각자의 레이아웃만 담당합니다.
+하나의 저장소에서 **web**(Cloudflare Pages 배포)과 **app**(Android APK)을 함께 운영합니다. 화면과 기능은 `web/shared/`에 한 번만 작성하고, app은 빌드할 때 이 코드를 그대로 가져와 같은 기능을 제공합니다.
 
 ## 폴더 구조
 
 ```
 spliit./
-├── shared/                 # web·app 공통 (기능은 여기서만 수정)
-│   ├── css/tokens.css      # 색상 등 디자인 토큰
-│   ├── css/components.css  # 카드, 버튼, 채팅 등 공통 컴포넌트 스타일
-│   ├── js/screens.js       # 공통 화면 마크업 (홈, 상세, 개설, 채팅, 동네할인, 파기 정책, 내 정보)
-│   └── js/app.js           # 공통 기능 (화면 이동, 1인당 금액 계산, 참여, 채팅 등)
-├── web/                    # 웹 버전 (배포 대상)
+├── web/                          # 웹 버전 (Cloudflare Pages 배포 폴더)
 │   ├── index.html
-│   ├── css/web.css         # PC 상단 내비 + 반응형 레이아웃
-│   └── package.json        # build 스크립트
-├── app/                    # 앱 버전
-│   ├── index.html
-│   ├── css/app.css         # 모바일 전체 화면 + 안전 영역 레이아웃
-│   ├── manifest.webmanifest
-│   └── package.json
-└── scripts/build.mjs       # <target> + shared 를 <target>/dist 로 묶는 빌드 스크립트
+│   ├── css/web.css               # 웹 전용 레이아웃 (PC 상단 메뉴 + 반응형)
+│   └── shared/                   # ★ web·app 공통 화면·기능 — 기능은 여기서만 수정
+│       ├── css/tokens.css        # 색상 등 디자인 값
+│       ├── css/components.css    # 공통 컴포넌트 스타일
+│       ├── js/screens.js         # 화면 마크업 (홈, 상세, 개설, 채팅, 동네할인, 파기 정책, 내 정보)
+│       └── js/app.js             # 기능 (화면 이동, 1인당 금액 계산, 참여, 채팅 등)
+│
+└── app/                          # 앱 버전 (Android Studio 프로젝트: android_app)
+    ├── settings.gradle.kts
+    ├── build.gradle.kts
+    ├── gradlew, gradlew.bat, gradle/wrapper/
+    ├── www/                      # 앱 전용 레이아웃 (전체 화면, 안전 영역)
+    │   ├── index.html
+    │   └── css/app.css
+    └── android_app/              # Android 모듈
+        ├── build.gradle.kts      # 빌드 시 app/www + web/shared → assets/www 자동 복사
+        └── src/main/
+            ├── AndroidManifest.xml
+            ├── java/com/spliit/app/MainActivity.kt   # WebView로 assets/www 실행
+            └── res/
 ```
 
-## 실행 (개발)
+## web — GitHub + Cloudflare Pages 배포
 
-`web/index.html` 또는 `app/index.html`을 브라우저로 열면 바로 실행됩니다. 설치할 패키지는 없습니다.
+빌드 과정 없이 `web/` 폴더를 그대로 배포합니다.
 
-## 빌드
-
-Node.js 18 이상이 필요합니다.
-
-```bash
-npm run build:web   # → web/dist
-npm run build:app   # → app/dist
-npm run build       # 둘 다
-```
-
-`dist/` 폴더에는 `shared/`가 함께 복사되므로, 그 폴더 하나만으로 배포할 수 있습니다.
-
-## web 배포 (프로젝트/web 기준)
-
-Vercel·Netlify 등에서 다음과 같이 설정합니다.
+1. Cloudflare 대시보드 → Workers & Pages → Create → Pages → **Connect to Git** → 이 저장소 선택
+2. 빌드 설정:
 
 | 항목 | 값 |
 |---|---|
-| Root Directory | `web` |
-| Build Command | `npm run build` |
-| Output Directory | `dist` |
+| Production branch | `main` |
+| Framework preset | None |
+| Build command | (비워 둠) |
+| Build output directory | `web` |
 
-app 버전도 같은 방식으로 Root Directory만 `app`으로 바꾸면 따로 배포할 수 있습니다.
+이후 `main`에 푸시할 때마다 자동으로 배포됩니다.
 
-## 기능 추가 규칙
+로컬 확인: `web/index.html`을 브라우저로 열면 됩니다.
 
-- 새 기능·화면 → `shared/js/app.js`, `shared/js/screens.js`
-- 공통 스타일 → `shared/css/`
-- web에서만 다른 배치 → `web/css/web.css`
-- app에서만 다른 배치 → `app/css/app.css`
+## app — Android Studio로 APK 만들기
+
+요구 사항: Android Studio (JDK 17 이상 포함), Android SDK 35
+
+1. Android Studio → **Open** → 저장소의 `app` 폴더 선택
+2. Gradle Sync가 끝날 때까지 대기
+3. 메뉴 **Build → Build App Bundle(s) / APK(s) → Build APK(s)**
+4. 결과물: `app/android_app/build/outputs/apk/debug/android_app-debug.apk`
+
+명령줄로 빌드할 때:
+
+```bash
+cd app
+./gradlew :android_app:assembleDebug
+```
+
+배포용 서명 APK는 **Build → Generate Signed App Bundle / APK** 에서 키스토어를 만들어 생성합니다. 키스토어 파일(`*.jks`)은 저장소에 올리지 마세요 (`.gitignore`에 포함됨).
+
+### app이 web과 같은 기능을 제공하는 방식
+
+- APK를 빌드할 때마다 Gradle의 `syncWebAssets` 작업이 `app/www`와 `web/shared`를 `assets/www`로 복사합니다.
+- `MainActivity`가 WebView로 `https://appassets.androidplatform.net/assets/www/index.html`을 엽니다 (WebViewAssetLoader 사용, 오프라인에서도 동작).
+- Android 뒤로가기 버튼: 홈 화면이면 앱 종료, 그 외에는 이전 화면으로 이동합니다.
+- 따라서 `web/shared`를 수정하면 웹은 다음 배포에, 앱은 다음 APK 빌드에 같은 변경이 반영됩니다.
+
+앱 레이아웃 미리보기: `app/www/index.html`을 브라우저로 열면 됩니다.
+
+## 수정 규칙
+
+| 바꾸려는 것 | 수정할 파일 |
+|---|---|
+| 기능·화면 (web·app 공통) | `web/shared/js/`, `web/shared/css/` |
+| 웹에서만 다른 배치 | `web/css/web.css` |
+| 앱에서만 다른 배치 | `app/www/css/app.css` |
+| 안드로이드 동작 (뒤로가기, 권한 등) | `app/android_app/src/main/` |
 
 ## 상태
 

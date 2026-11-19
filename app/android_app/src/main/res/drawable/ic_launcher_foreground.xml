@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 반으로 나뉜 원: '소분(나눠 사기)'을 표현한 임시 아이콘 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M51,34 A20,20 0 0,0 51,74 Z" />
+    <path
+        android:fillColor="#BFE3CF"
+        android:pathData="M57,34 A20,20 0 0,1 57,74 Z" />
+</vector>

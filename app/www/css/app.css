@@ -1,4 +1,4 @@
-/* Spliit app 전용 레이아웃 — 기능·화면은 shared/에서 가져온다 */
+/* Spliit app(Android WebView) 전용 레이아웃 — 화면·기능은 web/shared에서 가져온다 */
 html, body {
   height: 100%;
   background: var(--bg);
@@ -11,7 +11,7 @@ html, body {
 }
 input, textarea { -webkit-user-select: text; user-select: text; }
 
-/* 휴대폰 전체 화면 + 노치·홈바 안전 영역 */
+/* 휴대폰 전체 화면 + 상태바·내비게이션바 안전 영역 */
 .device {
   position: relative;
   width: 100vw;
