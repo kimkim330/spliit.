@@ -3,9 +3,9 @@ window.SPLIIT_SCREENS = `
 <div class="screen active" id="screen-home" style="padding-bottom:0;">
   <div class="home-topbar">
     <span class="home-logo">Spliit</span>
-    <div class="location-pill" onclick="alert('위치 변경')">
-      📍 마포구 망원동 <span style="font-size:.7rem;opacity:.6">▾</span>
-    </div>
+    <button type="button" class="location-pill" onclick="openLocation()" aria-label="동네 변경">
+      📍 <span data-loc="short">마포구 망원동</span> <span style="font-size:.7rem;opacity:.6">▾</span>
+    </button>
   </div>
 
   <div class="search-bar">
@@ -372,7 +372,7 @@ window.SPLIIT_SCREENS = `
 <div class="screen" id="screen-sale">
   <div class="sale-topbar">
     <span class="sale-logo">🏷️ 동네 할인</span>
-    <div class="location-pill" style="font-size:.75rem">📍 망원동 ▾</div>
+    <button type="button" class="location-pill" style="font-size:.75rem" onclick="openLocation()" aria-label="동네 변경">📍 <span data-loc="dong">망원동</span> ▾</button>
   </div>
 
   <div class="store-filter-row">
@@ -388,7 +388,7 @@ window.SPLIIT_SCREENS = `
     <div class="sale-banner">
       <div class="sale-banner-emoji">📢</div>
       <div>
-        <p class="sale-banner-title">이번 주 망원동 할인 7건</p>
+        <p class="sale-banner-title">이번 주 <span data-loc="dong">망원동</span> 할인 7건</p>
         <p class="sale-banner-sub">전단지 없이 앱에서 바로 확인하세요</p>
       </div>
     </div>
@@ -735,7 +735,7 @@ window.SPLIIT_SCREENS = `
           </div>
           <span class="trust-label">신뢰 점수 88 · 거래 7회</span>
         </div>
-        <p style="font-size:.75rem;color:var(--gray);margin-top:.35rem">📍 마포구 망원동 인증 완료</p>
+        <p style="font-size:.75rem;color:var(--gray);margin-top:.35rem">📍 <span data-loc="short">마포구 망원동</span> 인증 완료 · <span style="color:var(--green);font-weight:600;cursor:pointer;text-decoration:underline" onclick="openLocation()">동네 변경</span></p>
       </div>
     </div>
 
@@ -801,6 +801,23 @@ window.SPLIIT_SCREENS = `
     <button class="tab-item" data-nav="screen-sale" onclick="goTo('screen-sale')"><span class="tab-icon">🏷️</span><span class="tab-label">동네할인</span></button>
     <button class="tab-item" data-nav="screen-chat" onclick="goTo('screen-chat')"><span class="tab-icon">💬</span><span class="tab-label">채팅</span></button>
     <button class="tab-item" data-nav="screen-my" onclick="goTo('screen-my')"><span class="tab-icon">👤</span><span class="tab-label">내 정보</span></button>
+  </div>
+</div>
+
+<!-- ════════════ 화면: 동네 설정 (전국 읍·면·동) ════════════ -->
+<div class="screen" id="screen-location">
+  <div class="app-header">
+    <button class="back-btn" onclick="locationBack()" aria-label="뒤로">←</button>
+    <span class="app-header-title">동네 설정</span>
+    <span style="width:1.6rem"></span>
+  </div>
+  <div class="loc-search">
+    <input class="search-input loc-search-input" id="loc-search" type="search" placeholder="동네 이름으로 검색 (예: 망원동, 해운대)" autocomplete="off" oninput="searchLocation(this.value)">
+  </div>
+  <div class="loc-current">현재 동네 · <strong data-loc="full">서울특별시 마포구 망원동</strong></div>
+  <div class="loc-path" id="loc-path"></div>
+  <div class="scroll-body">
+    <ul class="loc-list" id="loc-list"></ul>
   </div>
 </div>
 `;

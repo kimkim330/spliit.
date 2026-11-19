@@ -2,7 +2,7 @@
    - 앱 셸을 미리 저장해 오프라인에서도 열리게 한다.
    - HTML은 네트워크 우선(새 배포가 바로 반영), 정적 파일은 캐시 후 백그라운드 갱신.
    - 파일 목록이나 동작을 바꾸면 VERSION을 올린다. */
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL_CACHE = `spliit-shell-${VERSION}`;
 const RUNTIME_CACHE = `spliit-runtime-${VERSION}`;
 
@@ -15,6 +15,7 @@ const SHELL_FILES = [
   '/pwa.js',
   '/shared/css/tokens.css',
   '/shared/css/components.css',
+  '/shared/js/regions.js',
   '/shared/js/screens.js',
   '/shared/js/app.js',
   '/icons/icon.svg',
