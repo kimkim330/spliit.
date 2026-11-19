@@ -72,3 +72,18 @@ body { display: flex; flex-direction: column; }
   .device .tab-bar,
   .device .fab { display: none; }
 }
+
+/* ── PWA ── */
+.web-install[hidden] { display: none; }
+@media (min-width: 768px) {
+  .web-install {
+    background: var(--white); color: var(--green);
+    border: 1px solid var(--green); border-radius: 8px; cursor: pointer;
+    font: 600 .9rem 'Noto Sans KR', sans-serif;
+    padding: .55rem 1rem;
+  }
+}
+/* 설치된 앱(standalone)으로 실행할 때 상태바 영역을 피한다 */
+@media (display-mode: standalone) and (max-width: 767px) {
+  .device { padding-top: env(safe-area-inset-top, 0); }
+}

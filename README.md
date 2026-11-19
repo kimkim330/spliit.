@@ -52,6 +52,22 @@ Workers 화면에서 만들어 Deploy command가 필수로 나오는 경우:
 
 로컬 확인: `web/index.html`을 브라우저로 열면 됩니다.
 
+### PWA (web 전용)
+
+web 버전은 설치형 웹앱(PWA)을 지원합니다. 기존 화면·기능 코드(`web/shared/`)는 수정하지 않았습니다.
+
+| 파일 | 역할 |
+|---|---|
+| `web/manifest.webmanifest` | 앱 이름, 아이콘, 색상, 홈 화면 바로가기(모임 개설) |
+| `web/sw.js` | 서비스 워커: 앱 파일 미리 저장 → 오프라인에서도 실행. HTML은 네트워크 우선이라 새 배포가 바로 반영됨 |
+| `web/pwa.js` | 서비스 워커 등록, PC 상단의 "앱 설치" 버튼(설치 가능할 때만 표시) |
+| `web/offline.html` | 저장된 화면도 없을 때 보이는 오프라인 안내 |
+| `web/icons/` | 앱 아이콘 (SVG 원본 + PNG) |
+
+- 서비스 워커는 HTTPS(배포 주소)나 `localhost`에서만 동작합니다. `index.html`을 파일로 직접 열면 PWA 기능 없이 기존처럼 실행됩니다.
+- 앱 파일 목록을 바꾸거나 캐시를 새로 만들어야 할 때는 `web/sw.js`의 `VERSION`을 올리세요.
+- 로컬 테스트: `cd web && python3 -m http.server 8080` 후 `http://localhost:8080` 접속
+
 ## app — Android Studio로 APK 만들기
 
 요구 사항: Android Studio (JDK 17 이상 포함), Android SDK 35

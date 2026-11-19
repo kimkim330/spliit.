@@ -11,6 +11,16 @@
 <link rel="stylesheet" href="./shared/css/tokens.css">
 <link rel="stylesheet" href="./shared/css/components.css">
 <link rel="stylesheet" href="./css/web.css">
+<!-- PWA -->
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#2B6E4E">
+<link rel="icon" href="/icons/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Spliit">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 </head>
 <body class="platform-web">
 
@@ -23,6 +33,7 @@
     <button data-nav="screen-chat" onclick="goTo('screen-chat')">채팅</button>
     <button data-nav="screen-my" onclick="goTo('screen-my')">내 정보</button>
   </nav>
+  <button class="web-install" id="pwa-install" hidden>앱 설치</button>
   <button class="web-cta" onclick="goTo('screen-create')">＋ 모임 개설</button>
 </header>
 
@@ -32,5 +43,6 @@
 
 <script src="./shared/js/screens.js"></script>
 <script src="./shared/js/app.js"></script>
+<script src="./pwa.js"></script>
 </body>
 </html>
