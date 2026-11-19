@@ -5,7 +5,15 @@
   // 서비스 워커 등록: HTTPS(또는 localhost)에서만 동작한다.
   if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) {
     window.addEventListener('load', function () {
-      navigator.serviceWorker.register('/sw.js').catch(function (err) {
+      // 새 버전 서비스 워커가 페이지를 넘겨받으면 한 번 새로고침해 최신 파일로 다시 연다.
+      var hadController = !!navigator.serviceWorker.controller;
+      var reloaded = false;
+      navigator.serviceWorker.addEventListener('controllerchange', function () {
+        if (!hadController || reloaded) return;
+        reloaded = true;
+        location.reload();
+      });
+      navigator.serviceWorker.register('/sw.js', { updateViaCache: 'none' }).catch(function (err) {
         console.warn('Service worker 등록 실패:', err);
       });
     });

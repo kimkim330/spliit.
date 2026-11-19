@@ -46,8 +46,9 @@ Workers & Pages → Create → Pages → **Connect to Git** → 이 저장소 �
 | Build command | (비워 둠) |
 | Build output directory | `web` |
 
-Workers 화면에서 만들어 Deploy command가 필수로 나오는 경우:
-`npx wrangler deploy --assets=./web --name=spliit --compatibility-date=2025-01-01`
+Workers 화면에서 만든 경우: Build command는 비워 두고 Deploy command는 기본값 `npx wrangler deploy`를 그대로 씁니다. 저장소 루트의 `wrangler.jsonc`가 `web/` 폴더를 배포하도록 지정합니다. Worker 이름이 `spliit`가 아니면 `wrangler.jsonc`의 `"name"`을 대시보드의 Worker 이름으로 바꾸세요.
+
+**새 버전이 안 보일 때:** `web/sw.js`의 `VERSION`과 `web/index.html`의 `?v=` 숫자를 함께 올린 뒤 배포하세요. 사용자 브라우저가 첫 새로고침에서 새 파일을 받습니다.
 
 `web/_headers`에 보안 헤더와 캐시 설정이 들어 있습니다.
 

@@ -1,8 +1,8 @@
 /* Spliit PWA 서비스 워커 (web 전용)
-   - 앱 셸을 미리 저장해 오프라인에서도 열리게 한다.
-   - HTML은 네트워크 우선(새 배포가 바로 반영), 정적 파일은 캐시 후 백그라운드 갱신.
-   - 파일 목록이나 동작을 바꾸면 VERSION을 올린다. */
-const VERSION = 'v2';
+   - 같은 출처 파일은 항상 네트워크 우선 → 새로 배포한 내용이 바로 반영된다.
+   - 네트워크가 안 될 때만 저장해 둔 파일로 실행한다(오프라인 지원).
+   - 파일 목록이나 동작을 바꾸면 VERSION과 index.html의 ?v= 값을 함께 올린다. */
+const VERSION = 'v3';
 const SHELL_CACHE = `spliit-shell-${VERSION}`;
 const RUNTIME_CACHE = `spliit-runtime-${VERSION}`;
 
@@ -30,7 +30,8 @@ const FONT_HOSTS = ['fonts.googleapis.com', 'fonts.gstatic.com'];
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(SHELL_CACHE)
-      .then(cache => cache.addAll(SHELL_FILES))
+      // cache: 'reload' → 브라우저 HTTP 캐시를 거치지 않고 서버의 최신 파일을 저장
+      .then(cache => cache.addAll(SHELL_FILES.map(url => new Request(url, { cache: 'reload' }))))
       .then(() => self.skipWaiting())
   );
 });
@@ -47,25 +48,29 @@ self.addEventListener('activate', event => {
   );
 });
 
-async function networkFirst(request) {
+// 네트워크 우선: 성공하면 저장, 실패하면 저장본 사용
+async function networkFirst(request, fallbackUrl) {
   const cache = await caches.open(SHELL_CACHE);
   try {
-    const response = await fetch(request);
-    if (response.ok) cache.put('/index.html', response.clone());
+    const response = await fetch(request, { cache: 'no-cache' });
+    if (response.ok) cache.put(fallbackUrl || request, response.clone());
     return response;
   } catch (err) {
-    return (await cache.match('/index.html')) ||
-           (await cache.match('/offline.html')) ||
-           Response.error();
+    const cached = await cache.match(fallbackUrl || request, { ignoreSearch: true });
+    if (cached) return cached;
+    if (request.mode === 'navigate') {
+      const offline = await cache.match('/offline.html');
+      if (offline) return offline;
+    }
+    return Response.error();
   }
 }
 
-async function staleWhileRevalidate(request, cacheName) {
-  const cache = await caches.open(cacheName);
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(RUNTIME_CACHE);
   const cached = await cache.match(request);
   const network = fetch(request)
     .then(response => {
-      // 글꼴 응답(opaque 포함)과 정상 응답만 저장
       if (response.ok || response.type === 'opaque') cache.put(request, response.clone());
       return response;
     })
@@ -78,20 +83,14 @@ self.addEventListener('fetch', event => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
 
-  // 페이지 이동(HTML): 네트워크 우선, 실패하면 저장된 화면
-  if (request.mode === 'navigate' && url.origin === self.location.origin) {
-    event.respondWith(networkFirst(request));
-    return;
-  }
-
-  // 같은 출처의 정적 파일
   if (url.origin === self.location.origin) {
-    event.respondWith(staleWhileRevalidate(request, SHELL_CACHE));
+    // 페이지 이동은 /index.html 로 저장·복구
+    event.respondWith(networkFirst(request, request.mode === 'navigate' ? '/index.html' : undefined));
     return;
   }
 
-  // Google Fonts
+  // Google Fonts: 바뀌지 않으므로 저장본 우선
   if (FONT_HOSTS.includes(url.hostname)) {
-    event.respondWith(staleWhileRevalidate(request, RUNTIME_CACHE));
+    event.respondWith(staleWhileRevalidate(request));
   }
 });
